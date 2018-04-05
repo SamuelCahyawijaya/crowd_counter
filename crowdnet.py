@@ -1,11 +1,3 @@
-import os
-from keras.layers import Input, Dense, Dropout, Activation, Flatten, Conv2D, MaxPooling2D, AveragePooling2D, Merge, BatchNormalization
-from keras.layers.merge import Concatenate
-from keras.callbacks import Callback, TensorBoard
-from keras.models import Model
-from preprocessing import load_data, preprocess_data
-
-
 def create_left_branch(input_layer, kernel_size=(3, 3)):
   x = Conv2D(64, kernel_size, padding='same')(input_layer)
   x = BatchNormalization()(x)
@@ -70,11 +62,11 @@ def create_model(batch_size=64, input_shape=(225, 225, 3)):
   input_layer = Input(shape=input_shape)
   left_branch = create_left_branch(input_layer)
   right_branch = create_right_branch(input_layer)
-
+    
   x = Concatenate()([left_branch, right_branch])
   x = Conv2D(1, (1, 1), padding='same')(x)
   model = Model(inputs=input_layer, outputs=x)
-  model.compile(optimizer='adam', loss='mean_squared_error', metrics=['accuracy'])
+  model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
   return model
 
 
@@ -103,11 +95,3 @@ class CheckPoints(Callback):
 
   def on_batch_end(self, batch, logs={}):
     return
-
-if __name__ == '__main__':
-  batch_size=1
-  model = create_model(batch_size)
-  tensorboard_callback = TensorBoard(log_dir='./output', write_graph=True, write_images=True)
-  model.fit_generator(load_data(batch_size=batch_size), epochs=100000, verbose=True, steps_per_epoch=50,
-   callbacks=[CheckPoints(), tensorboard_callback])
-  model.save('weights.h5')
