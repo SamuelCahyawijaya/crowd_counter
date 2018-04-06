@@ -217,7 +217,7 @@ def gaussian_filter_density(gts):
         if gt_count == 0:
             return density
 
-        pts = np.array(zip(np.nonzero(gt)[1], np.nonzero(gt)[0]))
+        pts = np.array(list(zip(np.nonzero(gt)[1], np.nonzero(gt)[0])))
         leafsize = 2048
         # build kdtree
         #print 'build kdtree...'

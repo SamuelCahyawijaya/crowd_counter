@@ -2,3 +2,4 @@ UCF_CC_50
 output
 weights
 *.pyc
+.ipynb_checkpoints
