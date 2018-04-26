@@ -3,3 +3,6 @@ output
 weights
 *.pyc
 .ipynb_checkpoints
+dataset/
+data/
+models/

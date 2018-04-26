@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torchvision import models
@@ -19,10 +20,10 @@ class CrowdNet(nn.Module):
             nn.Conv2d(3, 24, 5, padding=3),
             nn.ReLU(),
             nn.MaxPool2d(5, stride=2),
-            nn.Conv2d(3, 24, 5, padding=3),
+            nn.Conv2d(24, 24, 5, padding=3),
             nn.ReLU(),
             nn.MaxPool2d(5, stride=2),
-            nn.Conv2d(3, 24, 5, padding=3),
+            nn.Conv2d(24, 24, 5, padding=3),
             nn.ReLU(),
             nn.MaxPool2d(5, stride=2)
         )
@@ -32,6 +33,6 @@ class CrowdNet(nn.Module):
     def forward(self, x):
         do = self.deep_network(x)
         so = self.shallow_network(x)
-        co = torch.cat((do, so), -1)
+        co = torch.cat((do, so), 1)
         out = self.conv1d(co)
         return out
