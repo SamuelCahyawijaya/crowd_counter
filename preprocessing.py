@@ -20,8 +20,8 @@ slice_h = 256
 patch_w = 225
 patch_h = 225
 
-net_density_h = 28
-net_density_w = 28
+net_density_h = 27
+net_density_w = 27
 
 def load_gt_from_json(gt_file, gt_shape):
     gt = np.zeros(gt_shape, dtype='uint8') 
