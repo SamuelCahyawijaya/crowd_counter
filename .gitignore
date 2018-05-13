@@ -3,3 +3,5 @@ output
 weights
 *.pyc
 .ipynb_checkpoints
+/dataset
+.DS_Store
