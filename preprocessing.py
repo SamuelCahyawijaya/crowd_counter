@@ -26,16 +26,18 @@ net_density_w = 27
 def load_gt_from_json(gt_file, gt_shape):
     gt = np.zeros(gt_shape, dtype='uint8') 
     with open(gt_file, 'r') as jf:
-        for j, dot in enumerate(json.load(jf)):
+        json_data = json.load(jf)
+        for j, dot in enumerate(json_data):
             try:
                 gt[int(math.floor(dot['y'])), int(math.floor(dot['x']))] = 1
             except IndexError:
                 print(gt_file, dot['y'], dot['x'], sys.exc_info())
-    return gt
+    return gt, len(json_data)
 
 def load_images_and_gts(path):
     images = []
     gts = []
+    gts_count = []
     densities = []
     for gt_file in glob.iglob(os.path.join(path, '*.json')):
         print(gt_file)
@@ -46,8 +48,9 @@ def load_images_and_gts(path):
         images.append(img)
         
         #load ground truth
-        gt = load_gt_from_json(gt_file, img.shape[:-1])
+        gt, count = load_gt_from_json(gt_file, img.shape[:-1])
         gts.append(gt)
+        gts_count.append(count)
         
         #densities
         desnity_file = gt_file.replace('.json','.h5')
@@ -62,7 +65,7 @@ def load_images_and_gts(path):
         densities.append(density)
     print(path, len(images), 'img loaded')
     print(path, len(densities), 'den loaded')
-    return (images, gts, densities)
+    return (images, gts, gts_count, densities)
 
 def density_resize(density, fx, fy):
     return cv2.resize(density, None, fx=fx, fy=fy, interpolation = cv2.INTER_CUBIC)/(fx*fy)
